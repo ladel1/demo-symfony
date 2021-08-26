@@ -25,12 +25,8 @@ class ArticleController extends AbstractController
      */
     public function list(ArticleRepository $articleRepository): Response
     {
-        // méthode 1
-        $repo = $this->getDoctrine()->getRepository(Article::class);
-        dump($repo->find(1));
-        // méthode 2 inject ArticleRepo
-        $articles=$articleRepository->findOneByTitle("Formation Python");
-        dd($articles);
+        $articles=$articleRepository->findAll();
+        return $this->render('article/list.html.twig', compact('articles'));
     }
 
 
@@ -42,6 +38,17 @@ class ArticleController extends AbstractController
         $article=$articleRepository->findOneByUrl($url);
         return $this->render('article/index.html.twig', compact('article'));
     }
+
+    /**
+     * @Route("/article/supprimer/{id}", name="app_article_remove")
+     */
+    public function remove(ArticleRepository $articleRepository,$id): Response
+    {
+        $article=$articleRepository->find($id);
+        $this->entityManager->remove($article);
+        $this->entityManager->flush();
+        return $this->redirectToRoute("app_article_list");
+    }    
     
     /**
      * @Route("/articles/ajouter", name="app_article_add")
