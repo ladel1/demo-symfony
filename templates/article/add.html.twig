@@ -8,7 +8,26 @@
 </div>
 <div class="row">
     <div class="row">
-        {{form(formArticle)}}
+
+        {{ form_start(formArticle) }}
+            <div class="row">
+                <div class="input-field col s12">
+                    {{ form_widget(formArticle.title) }}
+                    {{form_label(formArticle.title)}} 
+                </div>
+                <div class="input-field col s12">
+                    {{ form_widget(formArticle.content, {'attr': {'class': 'materialize-textarea'}}) }}
+                    {{form_label(formArticle.content)}} 
+                </div>  
+                <div class="input-field col s12">
+                    {{ form_widget(formArticle.author) }}
+                    {{form_label(formArticle.author)}} 
+                </div>   
+
+                {{ form_widget(formArticle.Publier, {'attr': {'class': 'btn waves-effect waves-light'}}) }}
+    
+            </div>
+        {{ form_end(formArticle) }}
     </div>
 </div>
 {% endblock %}

@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-use function PHPUnit\Framework\isEmpty;
 
 class ArticleController extends AbstractController
 {
@@ -72,7 +71,8 @@ class ArticleController extends AbstractController
             // appliquer les changement de l'objet article dans la BDD
             $this->entityManager->flush();
             // Rediréger vers la page article
-            return $this->redirectToRoute("app_article_show",["url"=>$article->getUrl()]);
+            $this->addFlash("message","Article ajouté!");
+            return $this->redirectToRoute("app_article_list");
         }
         return $this->render('article/add.html.twig',[
             "formArticle"=>$form->createView()

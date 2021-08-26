@@ -22,6 +22,18 @@
             </thead>
     
             <tbody>
+                <div class="row">
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                        <div class="materialert success">
+                            <div class="material-icons">check</div>
+                                    {{
+                                        message
+                                    }}
+                        </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
                 {% for article in articles %}
                     <tr>
                         <td>{{article.title}}</td>
