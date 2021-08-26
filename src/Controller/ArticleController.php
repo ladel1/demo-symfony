@@ -6,8 +6,11 @@ use App\Entity\Article;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
+use function PHPUnit\Framework\isEmpty;
 
 class ArticleController extends AbstractController
 {
@@ -53,21 +56,38 @@ class ArticleController extends AbstractController
     /**
      * @Route("/articles/ajouter", name="app_article_add")
      */
-    public function add(): Response
+    public function add(Request $request): Response
     {
-        $article = new Article();
+        if(!empty($request->request->get("action"))){
+            if(
+                !empty($request->request->get("title")) &&
+                !empty($request->request->get("content")) &&
+                !empty($request->request->get("author")) 
+                ){
+                    $article = new Article();
+                    $title =$request->request->get("title");
+                    $url = str_replace(" ","-",strtolower($title));
+                    $article->setTitle($title)
+                            ->setContent($request->request->get("content"))
+                            ->setDateCreated(new \DateTime("now"))
+                            ->setDateUpdated(new \DateTime("now")) 
+                            ->setAuthor($request->request->get("author"))
+                            ->setUrl($url);                     
+                    $this->entityManager->persist($article);
+                    $this->entityManager->flush();
 
-        $article->setTitle("Formation Python")
-                ->setContent("Formation PythonFormation PythonFormation Python")
-                ->setDateCreated(new \DateTime("now"))
-                ->setDateUpdated(new \DateTime("now")) 
-                ->setAuthor("Adel Latibi")
-                ->setUrl("formation-python");   
+                return $this->redirectToRoute("app_article_show",["url"=>$url]);
 
-        $this->entityManager->persist($article);
-        $this->entityManager->flush();
-        
-        dd("Article ajouté");
+            }else{
+
+                dump("pas ok");
+
+            }
+        }
+
+
+
+        return $this->render('article/add.html.twig');
     }  
     
     /**
