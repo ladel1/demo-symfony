@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -58,36 +59,21 @@ class ArticleController extends AbstractController
      */
     public function add(Request $request): Response
     {
-        if(!empty($request->request->get("action"))){
-            if(
-                !empty($request->request->get("title")) &&
-                !empty($request->request->get("content")) &&
-                !empty($request->request->get("author")) 
-                ){
-                    $article = new Article();
-                    $title =$request->request->get("title");
-                    $url = str_replace(" ","-",strtolower($title));
-                    $article->setTitle($title)
-                            ->setContent($request->request->get("content"))
-                            ->setDateCreated(new \DateTime("now"))
-                            ->setDateUpdated(new \DateTime("now")) 
-                            ->setAuthor($request->request->get("author"))
-                            ->setUrl($url);                     
-                    $this->entityManager->persist($article);
-                    $this->entityManager->flush();
-
-                return $this->redirectToRoute("app_article_show",["url"=>$url]);
-
-            }else{
-
-                dump("pas ok");
-
-            }
+        $article = new Article();
+        $form = $this->createForm(ArticleType::class,$article);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $article->setDateCreated(new \DateTime("now"));
+            $article->setDateUpdated(new \DateTime("now"));
+            $url = str_replace(" ","-",strtolower($article->getTitle()));
+            $article->setUrl($url);
+            $this->entityManager->persist($article);
+            $this->entityManager->flush();
+            return $this->redirectToRoute("app_article_show",["url"=>$url]);
         }
-
-
-
-        return $this->render('article/add.html.twig');
+        return $this->render('article/add.html.twig',[
+            "formArticle"=>$form->createView()
+        ]);
     }  
     
     /**
