@@ -68,5 +68,19 @@ class ArticleController extends AbstractController
         $this->entityManager->flush();
         
         dd("Article ajouté");
-    }    
+    }  
+    
+    /**
+     * @Route("/articles/modifier/{id}", name="app_article_update")
+     */
+    public function update(ArticleRepository $articleRepository,$id): Response
+    {
+        // recup de l'article
+        $article = $articleRepository->find($id);  
+        // modif de titre
+        $article->setTitle("Formation Machine Learning");
+        // flush -> appliquer tt les change sur l'objet 
+        $this->entityManager->flush();        
+        dd("Article modifié");
+    }     
 }
