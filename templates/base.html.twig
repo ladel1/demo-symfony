@@ -18,6 +18,16 @@
         {% endblock %}
     </head>
     <body>
+        <nav>
+            <div class="nav-wrapper">
+              <a href="#" class="brand-logo">Demo Blog Symfony</a>
+              <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="{{path("home")}}">Home</a></li>
+                <li><a href="{{path("app_article_list")}}">Articles</a></li>
+                <li><a href="{{path("app_article_add")}}">Ajouter article</a></li>
+              </ul>
+            </div>
+          </nav>
         <div class="container">
             <!-- Page Content goes here -->
             {% block body %}{% endblock %}
