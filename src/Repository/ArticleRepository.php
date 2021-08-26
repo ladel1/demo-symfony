@@ -19,6 +19,9 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
+
+
+
     // /**
     //  * @return Article[] Returns an array of Article objects
     //  */
@@ -35,16 +38,24 @@ class ArticleRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function findOneByTitle($value): ?Article
+    {
+        $entityManager = $this->getEntityManager();
+        $dql='SELECT a
+              FROM App\Entity\Article a
+              WHERE a.title = :val';
+        $query = $entityManager->createQuery($dql)->setParameter('val',$value);
+        return $query->getOneOrNullResult();
+    }
 
-    /*
-    public function findOneBySomeField($value): ?Article
+    public function findOneByUrl($value): ?Article
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
+            ->andWhere('a.url = :val')
             ->setParameter('val', $value)
             ->getQuery()
             ->getOneOrNullResult()
         ;
     }
-    */
+
 }

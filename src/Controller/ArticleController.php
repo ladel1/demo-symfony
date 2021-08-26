@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,22 +23,24 @@ class ArticleController extends AbstractController
     /**
      * @Route("/articles", name="app_article_list")
      */
-    public function list(): Response
+    public function list(ArticleRepository $articleRepository): Response
     {
-        return $this->render('article/index.html.twig', [
-            'controller_name' => 'ArticleController',
-        ]);
+        // méthode 1
+        $repo = $this->getDoctrine()->getRepository(Article::class);
+        dump($repo->find(1));
+        // méthode 2 inject ArticleRepo
+        $articles=$articleRepository->findOneByTitle("Formation Python");
+        dd($articles);
     }
 
 
     /**
      * @Route("/article/{url}", name="app_article_show")
      */
-    public function show($url): Response
+    public function show(ArticleRepository $articleRepository,$url): Response
     {
-        return $this->render('article/index.html.twig', [
-            'controller_name' => 'ArticleController',
-        ]);
+        $article=$articleRepository->findOneByUrl($url);
+        return $this->render('article/index.html.twig', compact('article'));
     }
     
     /**
@@ -47,12 +50,12 @@ class ArticleController extends AbstractController
     {
         $article = new Article();
 
-        $article->setTitle("Formation Symfony version 6.0.1")
-                ->setContent("balblablabla")
+        $article->setTitle("Formation Python")
+                ->setContent("Formation PythonFormation PythonFormation Python")
                 ->setDateCreated(new \DateTime("now"))
                 ->setDateUpdated(new \DateTime("now")) 
                 ->setAuthor("Adel Latibi")
-                ->setUrl("formation-symfony");   
+                ->setUrl("formation-python");   
 
         $this->entityManager->persist($article);
         $this->entityManager->flush();
