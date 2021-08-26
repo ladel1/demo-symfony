@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Article
 {
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -47,6 +48,13 @@ class Article
      */
     private $url;
 
+
+    public function __construct()
+    {
+        $this->dateCreated = new \DateTime("now");
+        $this->dateUpdated = new \DateTime("now");
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,7 +68,8 @@ class Article
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
+        $url = str_replace(" ","-",strtolower($title));
+        $this->setUrl($url);
         return $this;
     }
 
