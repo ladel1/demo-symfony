@@ -5,4 +5,13 @@
 {% block body %}
 <h1>{{article.title}}</h1>
 <p>{{article.content}}</p>
+<h6>Ajouter un commentaire</h6>
+
+{{ form_start(form, {'action': path('comment')}) }}
+    <input type="hidden" name="urlArticle" value="{{article.url}}">
+{{ form_end(form) }}
+
+{% for comment in article.comments %}
+    <p>{{comment.content}}</p>
+{% endfor %}
 {% endblock %}

@@ -36,7 +36,7 @@
                 </div>
                 {% for article in articles %}
                     <tr>
-                        <td>{{article.title}}</td>
+                        <td><a href="{{path('app_article_show',{'url':article.url})}}">{{article.title}}</a></td>
                         <td>{{article.content}}</td>                
                         <td>{{article.dateCreated|date("Y-m-d H:i")}}</td>
                         <td>{{article.dateUpdated|date("Y-m-d H:i")}}</td>

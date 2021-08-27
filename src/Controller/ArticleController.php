@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\Comment;
 use App\Form\ArticleType;
+use App\Form\CommentType;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,8 +40,13 @@ class ArticleController extends AbstractController
      */
     public function show(ArticleRepository $articleRepository,$url): Response
     {
+        $comment = new Comment();
+        $formComment = $this->createForm(CommentType::class,$comment);        
         $article=$articleRepository->findOneByUrl($url);
-        return $this->render('article/index.html.twig', compact('article'));
+        return $this->render('article/index.html.twig',[
+            "article"=>$article,
+            "form"=>$formComment->createView()
+        ]);
     }
 
     /**
