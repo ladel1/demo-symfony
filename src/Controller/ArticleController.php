@@ -65,25 +65,29 @@ class ArticleController extends AbstractController
      */
     public function add(Request $request): Response
     {
-        // instancier la classe Article
-        $article = new Article();
-        // Créer le formulaire et le relier avec l'objet article
-        $form = $this->createForm(ArticleType::class,$article);
-        // Récuperer les données de formulaire
-        $form->handleRequest($request);
-        // verifier si formulaire est valide et envoyé
-        if($form->isSubmitted() && $form->isValid()){     
-            // persister les dossier et genéer insert       
-            $this->entityManager->persist($article);
-            // appliquer les changement de l'objet article dans la BDD
-            $this->entityManager->flush();
-            // Rediréger vers la page article
-            $this->addFlash("message","Article ajouté!");
-            return $this->redirectToRoute("app_article_list");
+        if($this->isGranted("ROLE_USER")){
+            // instancier la classe Article
+            $article = new Article();
+            // Créer le formulaire et le relier avec l'objet article
+            $form = $this->createForm(ArticleType::class,$article);
+            // Récuperer les données de formulaire
+            $form->handleRequest($request);
+            // verifier si formulaire est valide et envoyé
+            if($form->isSubmitted() && $form->isValid()){     
+                // persister les dossier et genéer insert       
+                $this->entityManager->persist($article);
+                // appliquer les changement de l'objet article dans la BDD
+                $this->entityManager->flush();
+                // Rediréger vers la page article
+                $this->addFlash("message","Article ajouté!");
+                return $this->redirectToRoute("app_article_list");
+            }
+            return $this->render('article/add.html.twig',[
+                "formArticle"=>$form->createView()
+            ]);
+        }else{
+            return $this->redirectToRoute("app_login");
         }
-        return $this->render('article/add.html.twig',[
-            "formArticle"=>$form->createView()
-        ]);
     }  
     
     /**
